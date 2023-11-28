@@ -1,0 +1,135 @@
+schema: '2.0'
+stages:
+  fixLabels:
+    cmd: python steps/0_fixAnnotations.py
+    deps:
+    - path: data/label_mapping.txt
+      md5: b01217278468d3b3cb7bbc77c21ed3d0
+      size: 429
+    - path: data/labels/
+      md5: 503b5dcecc402bd2b5cde4e364098e41.dir
+      size: 13982982
+      nfiles: 273
+    - path: steps/0_fixAnnotations.py
+      md5: 2f27a46c0e1faa80c623a08f2fc1f61d
+      size: 595
+    - path: steps/utilsPy/utils_fixAnnotations.py
+      md5: fda78c26536dc86fb6cf35a77366bb88
+      size: 2124
+    outs:
+    - path: data/fixed_annotations/
+      md5: bb0ecdb9475a3b5b39fa5597ab3e68c2.dir
+      size: 4609588
+      nfiles: 273
+  splitDataset:
+    cmd: python steps/1_splitDataset.py
+    deps:
+    - path: data/fixed_annotations
+      md5: bb0ecdb9475a3b5b39fa5597ab3e68c2.dir
+      size: 4609588
+      nfiles: 273
+    - path: data/images
+      md5: 19a2b6715c2c744244e21415aece33c9.dir
+      size: 20013762
+      nfiles: 199
+    - path: steps/1_splitDataset.py
+      md5: e4b8ddf2d0811e34534fb4abcd660853
+      size: 2696
+    params:
+      params.yaml:
+        splitDataset.division: 'true'
+        splitDataset.test_proportion: 0.1
+        splitDataset.train_proportion: 0.7
+        splitDataset.validation_proportion: 0.2
+    outs:
+    - path: datasets/test
+      md5: 2674055e22659e987a51fe42e3dcb713.dir
+      size: 1837735
+      nfiles: 40
+    - path: datasets/train
+      md5: 50531add6bd5806fcbd72de1403055ba.dir
+      size: 16719947
+      nfiles: 278
+    - path: datasets/validation
+      md5: 1fb3077c729b5630be5b3e178311e1a6.dir
+      size: 4910853
+      nfiles: 80
+  training:
+    cmd: python steps/2_training.py
+    deps:
+    - path: datasets/train
+      md5: 50531add6bd5806fcbd72de1403055ba.dir
+      size: 16719947
+      nfiles: 278
+    - path: datasets/validation
+      md5: 1fb3077c729b5630be5b3e178311e1a6.dir
+      size: 4910853
+      nfiles: 80
+    - path: steps/2_training.py
+      md5: 31127fee765bb3870bd012bc2a589383
+      size: 2277
+    params:
+      params.yaml:
+        train.batch_size: 8
+        train.box: 0.5
+        train.cls: 0.5
+        train.copy_paste: 0.0
+        train.degrees: 0.0
+        train.epochs: 1500
+        train.fliplr: 0.0
+        train.flipud: 0.0
+        train.hsv_h: 0.0
+        train.hsv_s: 0.0
+        train.hsv_v: 0.0
+        train.image_size: 640
+        train.learning_rate_final: 1e-08
+        train.learning_rate_initial: 0.01
+        train.mixup: 0.0
+        train.mosaic: 0.0
+        train.optimizer: Adam
+        train.patience: 15
+        train.perspective: 0.0
+        train.scale: 0.0
+        train.seed: 4224
+        train.shear: 0.0
+        train.translate: 0.0
+    outs:
+    - path: output/train
+      md5: 6ee9a806718c150a73a7346a04a57146.dir
+      size: 34546428
+      nfiles: 24
+  testing:
+    cmd: python steps/3_testing.py
+    deps:
+    - path: datasets/test
+      md5: 2674055e22659e987a51fe42e3dcb713.dir
+      size: 1837735
+      nfiles: 40
+    - path: output/train/weights
+      md5: 3552aa243835ced73c01ce1da43b49e8.dir
+      size: 24792217
+      nfiles: 3
+    - path: steps/3_testing.py
+      md5: 6d50ee0f5020085a8a481ae9513d04cd
+      size: 706
+    outs:
+    - path: output/val
+      md5: 233fd7b4e94d7213201918092bccd62a.dir
+      size: 3161355
+      nfiles: 13
+  printResults:
+    cmd: python steps/4_printResults.py
+    deps:
+    - path: output/train/results.csv
+      md5: 28b9e3802210ac9918d945494ec9f77b
+      size: 61152
+    - path: output/val
+      md5: 233fd7b4e94d7213201918092bccd62a.dir
+      size: 3161355
+      nfiles: 13
+    - path: steps/4_printResults.py
+      md5: 3f44f951a8ebad13a4f1f795de7a2625
+      size: 1346
+    - path: steps/utilsPy/utils_printResults.py
+      md5: 7a3b2c2fb77c7730924c5a2718fb7493
+      size: 937

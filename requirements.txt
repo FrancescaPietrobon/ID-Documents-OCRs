@@ -1,0 +1,4 @@
+matplotlib >= 3.7.1
+pandas >= 2.0.1
+ultralytics == 8.0.132
+protobuf == 3.20.0
