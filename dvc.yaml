@@ -1,0 +1,67 @@
+stages:  
+  extract_data:
+    cmd: python src/1_extract_data.py data/Img data/XML
+    deps:
+      - src/1_extract_data.py
+      - src/utilities/utils_1_extract_data.py
+      - src/utilities/utils.py
+      - src/LabelEncoder.py
+      - data/Img
+      - data/XML
+    params:
+      - prepare.seed
+      - prepare.dim
+      - prepare.train
+      - prepare.val
+    outs:
+      - extracted_data
+
+  train:
+    cmd: python src/2_train.py
+    deps:
+      - src/2_train.py
+      - src/utilities/utils_2_train.py
+      - src/utilities/utils.py
+      - src/losses.py
+      - src/metrics.py
+      - extracted_data
+    params:
+      - train.learning_rate
+      - train.epochs
+      - train.batch_size
+      - train.patience
+      - loss.alpha
+      - loss.delta
+    outs:
+      - model
+  
+  test:
+    cmd: python src/3_test.py model data/Img
+    deps:
+      - src/3_test.py
+      - src/utilities/utils_3_test.py
+      - src/utilities/utils.py
+      - src/Anchor.py
+      - model
+      - extracted_data
+    params:
+      - test.threshold
+      - test.threshold_nms
+
+  evaluation:
+    cmd: python src/4_evaluation.py model
+    deps:
+      - src/4_evaluation.py
+      - src/utilities/utils_4_evaluation.py
+      - src/utilities/utils.py
+      - src/Anchor.py
+      - model
+      - extracted_data
+    params:
+      - prepare.seed
+      - prepare.dim
+      - prepare.train
+      - prepare.val
+      - test.threshold
+      - test.threshold_nms
+
