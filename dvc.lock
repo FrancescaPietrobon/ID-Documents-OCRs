@@ -1,0 +1,155 @@
+schema: '2.0'
+stages:
+  extract_data:
+    cmd: python src/1_extract_data.py data/Img data/XML
+    deps:
+    - path: data/Img
+      hash: md5
+      md5: 64551d44ba21b0ba0c675fc5411fed86.dir
+      size: 27185570
+      nfiles: 262
+    - path: data/XML
+      hash: md5
+      md5: ed6a1894b930d259bba3a1aad53f6fd6.dir
+      size: 13453055
+      nfiles: 262
+    - path: src/1_extract_data.py
+      hash: md5
+      md5: b959a44774b21dd642ad285f1d717e31
+      size: 3654
+    - path: src/LabelEncoder.py
+      hash: md5
+      md5: 876eb94e302007e2a3818ec213ee65d9
+      size: 4550
+    - path: src/utilities/utils.py
+      hash: md5
+      md5: 423f043b560071cd57c9aba94007cd0b
+      size: 7504
+    - path: src/utilities/utils_1_extract_data.py
+      hash: md5
+      md5: 61c97800a2a927b969145ddc47aba732
+      size: 2394
+    params:
+      params.yaml:
+        prepare.dim: 800
+        prepare.seed: 20170428
+        prepare.train: 0.6
+        prepare.val: 0.3
+    outs:
+    - path: extracted_data
+      hash: md5
+      md5: bebfd2e7daf99fa6bfdd4d2b3849e212.dir
+      size: 2952842908
+      nfiles: 7
+  train:
+    cmd: python src/2_train.py
+    deps:
+    - path: extracted_data
+      hash: md5
+      md5: bebfd2e7daf99fa6bfdd4d2b3849e212.dir
+      size: 2952842908
+      nfiles: 7
+    - path: src/2_train.py
+      hash: md5
+      md5: 37635d9bdc80a47ce0707bdf9003ed96
+      size: 3111
+    - path: src/losses.py
+      hash: md5
+      md5: ff583fd938b47ebbe45255042869a2fb
+      size: 1938
+    - path: src/metrics.py
+      hash: md5
+      md5: ef2d54707b3f388ac4b1f9a38795b314
+      size: 2922
+    - path: src/utilities/utils.py
+      hash: md5
+      md5: 423f043b560071cd57c9aba94007cd0b
+      size: 7504
+    - path: src/utilities/utils_2_train.py
+      hash: md5
+      md5: ef487590a9906669178621aca2368fa5
+      size: 4473
+    params:
+      params.yaml:
+        loss.alpha: 0.25
+        loss.delta: 0.5
+        train.batch_size: 1
+        train.epochs: 1000
+        train.learning_rate: 3e-06
+        train.patience: 15
+    outs:
+    - path: model
+      hash: md5
+      md5: b2e614460a9bced2db67b4cb72c3a1ec.dir
+      size: 426088256
+      nfiles: 4
+  test:
+    cmd: python src/3_test.py model data/Img
+    deps:
+    - path: extracted_data
+      hash: md5
+      md5: bebfd2e7daf99fa6bfdd4d2b3849e212.dir
+      size: 2952842908
+      nfiles: 7
+    - path: model
+      hash: md5
+      md5: b2e614460a9bced2db67b4cb72c3a1ec.dir
+      size: 426088256
+      nfiles: 4
+    - path: src/3_test.py
+      hash: md5
+      md5: e6e3fc9876454e0ef743d03c215fb47c
+      size: 2345
+    - path: src/Anchor.py
+      hash: md5
+      md5: 7e10283cf718dcca6245d0752377e8c1
+      size: 3825
+    - path: src/utilities/utils.py
+      hash: md5
+      md5: 423f043b560071cd57c9aba94007cd0b
+      size: 7504
+    - path: src/utilities/utils_3_test.py
+      hash: md5
+      md5: 058b8bcc8b440cc9778f47672c881e6a
+      size: 2643
+    params:
+      params.yaml:
+        test.threshold: 0.05
+        test.threshold_nms: 0.9
+  evaluation:
+    cmd: python src/4_evaluation.py model
+    deps:
+    - path: extracted_data
+      hash: md5
+      md5: bebfd2e7daf99fa6bfdd4d2b3849e212.dir
+      size: 2952842908
+      nfiles: 7
+    - path: model
+      hash: md5
+      md5: b2e614460a9bced2db67b4cb72c3a1ec.dir
+      size: 426088256
+      nfiles: 4
+    - path: src/4_evaluation.py
+      hash: md5
+      md5: aa9e7fa996bca1f33614349f3d3a6c6a
+      size: 3960
+    - path: src/Anchor.py
+      hash: md5
+      md5: 7e10283cf718dcca6245d0752377e8c1
+      size: 3825
+    - path: src/utilities/utils.py
+      hash: md5
+      md5: 423f043b560071cd57c9aba94007cd0b
+      size: 7504
+    - path: src/utilities/utils_4_evaluation.py
+      hash: md5
+      md5: 533a450a0bae8a065625352a5bf3aa5a
+      size: 2270
+    params:
+      params.yaml:
+        prepare.dim: 800
+        prepare.seed: 20170428
+        prepare.train: 0.6
+        prepare.val: 0.3
+        test.threshold: 0.05
+        test.threshold_nms: 0.9

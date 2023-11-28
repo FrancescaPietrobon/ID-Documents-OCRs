@@ -1,0 +1,5 @@
+|            |   Number of images |
+|:-----------|-------------------:|
+| Train      |                157 |
+| Validation |                 78 |
+| Test       |                 27 |

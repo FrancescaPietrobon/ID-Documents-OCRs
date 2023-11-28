@@ -1,0 +1,19 @@
+prepare:
+  dim: 800
+  seed: 20170428
+  train: 0.6
+  val: 0.3
+
+loss:
+  delta: 0.5
+  alpha: 0.25
+
+train:
+  learning_rate: 0.000003
+  epochs: 1000
+  batch_size: 1
+  patience: 15
+
+test:
+  threshold: 0.05
+  threshold_nms: 0.9
