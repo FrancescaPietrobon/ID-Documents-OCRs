@@ -1,0 +1,80 @@
+stages:
+  fixLabels:
+    cmd: python steps/0_fixAnnotations.py
+    deps:
+    - data/labels/
+    - data/label_mapping.txt
+    - steps/0_fixAnnotations.py
+    - steps/utilsPy/utils_fixAnnotations.py
+    outs:
+    - data/fixed_annotations/
+
+  preprocessing:
+    cmd: python steps/0_preprocessing.py
+    deps:
+    - data/images/
+    - steps/0_preprocessing.py
+    - steps/utilsPy/utils_preprocessing.py
+    outs:
+    - data/binary_images
+
+  splitDataset:
+    cmd: python steps/1_splitDataset.py
+    deps:
+    - data/binary_images
+    - data/fixed_annotations
+    - steps/1_splitDataset.py
+    params:
+    - splitDataset.division
+    - splitDataset.train_proportion
+    - splitDataset.validation_proportion
+    - splitDataset.test_proportion
+    outs:
+    - datasets/train
+    - datasets/validation
+    - datasets/test
+
+  training:
+    cmd: python steps/2_training.py
+    deps:
+    - datasets/train
+    - datasets/validation
+    - steps/2_training.py
+    params:
+    - train.image_size
+    - train.epochs
+    - train.batch_size
+    - train.learning_rate_initial
+    - train.learning_rate_final
+    - train.box
+    - train.cls
+    - train.patience
+    - train.seed
+    - train.flipud
+    - train.fliplr
+    - train.optimizer
+    outs:
+    - output/train
+
+  testing:
+    cmd: python steps/3_testing.py
+    deps:
+    - datasets/test
+    - output/train/weights
+    - steps/3_testing.py
+    outs:
+    - output/val
+
+  printResults:
+    cmd: python steps/4_printResults.py
+    deps:
+    - output/val
+    - output/train/results.csv
+    - steps/utilsPy/utils_printResults.py
+    - steps/4_printResults.py
+
+
+
+
+
+  

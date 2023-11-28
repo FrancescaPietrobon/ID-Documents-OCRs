@@ -1,0 +1,26 @@
+splitDataset:
+  division: 'true'
+  train_proportion: 0.7
+  validation_proportion: 0.2
+  test_proportion: 0.1
+  seed: 4224
+
+train:
+  image_size: 640
+  epochs: 1500
+  batch_size: 8
+  learning_rate_initial: 0.01
+  learning_rate_final: 0.00000001
+  box: 0.5
+  cls: 0.5
+  patience: 15
+  flipud: 0.0
+  fliplr: 0.0
+  seed: 4224
+  optimizer: 'Adam'
+  directory_output: 'output'
+
+test:
+  directory_output: 'output'
+
+

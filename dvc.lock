@@ -1,0 +1,142 @@
+schema: '2.0'
+stages:
+  fixLabels:
+    cmd: python steps/0_fixAnnotations.py
+    deps:
+    - path: data/label_mapping.txt
+      md5: b01217278468d3b3cb7bbc77c21ed3d0
+      size: 429
+    - path: data/labels/
+      md5: 503b5dcecc402bd2b5cde4e364098e41.dir
+      size: 13982982
+      nfiles: 273
+    - path: steps/0_fixAnnotations.py
+      md5: 2c8444918302365150a969dd71777830
+      size: 596
+    - path: steps/utilsPy/utils_fixAnnotations.py
+      md5: fda78c26536dc86fb6cf35a77366bb88
+      size: 2124
+    outs:
+    - path: data/fixed_annotations/
+      md5: bb0ecdb9475a3b5b39fa5597ab3e68c2.dir
+      size: 4609588
+      nfiles: 273
+  splitDataset:
+    cmd: python steps/1_splitDataset.py
+    deps:
+    - path: data/binary_images
+      md5: 40b26445fd03da6a54e3a0bdea867575.dir
+      size: 31296033
+      nfiles: 199
+    - path: data/fixed_annotations
+      md5: bb0ecdb9475a3b5b39fa5597ab3e68c2.dir
+      size: 4609588
+      nfiles: 273
+    - path: steps/1_splitDataset.py
+      md5: 8687ecb12d75e73f091687e8de6a5822
+      size: 2702
+    params:
+      params.yaml:
+        splitDataset.division: 'true'
+        splitDataset.test_proportion: 0.1
+        splitDataset.train_proportion: 0.7
+        splitDataset.validation_proportion: 0.2
+    outs:
+    - path: datasets/test
+      md5: 28037964e5aa3eeaa724dab2ad13a8c1.dir
+      size: 4001571
+      nfiles: 40
+    - path: datasets/train
+      md5: 2066c7d11d440e512b45682e7900d5a2.dir
+      size: 24464387
+      nfiles: 278
+    - path: datasets/validation
+      md5: 4213504647cbe976c41271f4c8301783.dir
+      size: 6284848
+      nfiles: 80
+  training:
+    cmd: python steps/2_training.py
+    deps:
+    - path: datasets/train
+      md5: 2066c7d11d440e512b45682e7900d5a2.dir
+      size: 24464387
+      nfiles: 278
+    - path: datasets/validation
+      md5: 4213504647cbe976c41271f4c8301783.dir
+      size: 6284848
+      nfiles: 80
+    - path: steps/2_training.py
+      md5: dc84459aece0570e9f7d9878feae8791
+      size: 1524
+    params:
+      params.yaml:
+        train.batch_size: 8
+        train.box: 0.5
+        train.cls: 0.5
+        train.epochs: 1500
+        train.fliplr: 0.0
+        train.flipud: 0.0
+        train.image_size: 640
+        train.learning_rate_final: 1e-08
+        train.learning_rate_initial: 0.01
+        train.optimizer: Adam
+        train.patience: 15
+        train.seed: 4224
+    outs:
+    - path: output/train
+      md5: 7db83acaf63a5016c7e858f9741ccb9e.dir
+      size: 35972376
+      nfiles: 24
+  testing:
+    cmd: python steps/3_testing.py
+    deps:
+    - path: datasets/test
+      md5: 28037964e5aa3eeaa724dab2ad13a8c1.dir
+      size: 4001571
+      nfiles: 40
+    - path: output/train/weights
+      md5: 01ee4a9d6b62f4dfe59b58a6fc810bd2.dir
+      size: 24792217
+      nfiles: 3
+    - path: steps/3_testing.py
+      md5: 6d50ee0f5020085a8a481ae9513d04cd
+      size: 706
+    outs:
+    - path: output/val
+      md5: 5dd1b7381a83d099c3445bd90c77056e.dir
+      size: 3368831
+      nfiles: 13
+  printResults:
+    cmd: python steps/4_printResults.py
+    deps:
+    - path: output/train/results.csv
+      md5: 99a950b4dbd88c233e2eadcfa8eec493
+      size: 87360
+    - path: output/val
+      md5: 5dd1b7381a83d099c3445bd90c77056e.dir
+      size: 3368831
+      nfiles: 13
+    - path: steps/4_printResults.py
+      md5: dd40059a637d69e9adb533ab686e4e97
+      size: 1354
+    - path: steps/utilsPy/utils_printResults.py
+      md5: 7a3b2c2fb77c7730924c5a2718fb7493
+      size: 937
+  preprocessing:
+    cmd: python steps/0_preprocessing.py
+    deps:
+    - path: data/images/
+      md5: 19a2b6715c2c744244e21415aece33c9.dir
+      size: 20013762
+      nfiles: 199
+    - path: steps/0_preprocessing.py
+      md5: 7cdd61d2a0a3643c36a8e3e3b1fc0562
+      size: 666
+    - path: steps/utilsPy/utils_preprocessing.py
+      md5: 4d2f286c7b05e0152d4e224efb412c65
+      size: 1292
+    outs:
+    - path: data/binary_images
+      md5: 40b26445fd03da6a54e3a0bdea867575.dir
+      size: 31296033
+      nfiles: 199
