@@ -22,3 +22,13 @@ For each model, there is a dedicated branch in this repository containing the tr
 - [YOLOv8-Binary Branch](https://github.com/FrancescaPietrobon/ID-Documents-OCRs/tree/yolov8-binary)
 
 Click on the branch links above to directly access the code and training details for each model.
+
+
+## CI/CD Pipeline and Training Process
+
+The training process utilized a CI/CD pipeline on GitLab, incorporating CML (Continuous Machine Learning) and DVC (Data Version Control), with the training data stored on AWS S3.
+
+To initiate training, load the data into the storage location set in `.dvc/config` using DVC and complete any missing data configurations in the `.gitlab-ci.yml` file.
+
+This repository provides only a summary of the code used and the training results.
+
