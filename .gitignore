@@ -3,5 +3,5 @@
 /model
 /src/__pycache__
 /src/utilities/__pycache__
-/fit_res/my_history.npy
-/evaluation_model
+/fit_res
+/evaluation_model/predictions
