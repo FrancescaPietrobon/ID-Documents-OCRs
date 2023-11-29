@@ -4,7 +4,7 @@
 
 ![plot](./evaluation_model/metric_acc/loss.png)
 
-## Box loss
+## Regression loss
 
 ![plot](./evaluation_model/metric_acc/box_loss.png)
 
